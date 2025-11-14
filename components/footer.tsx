@@ -22,9 +22,11 @@ export function Footer() {
           {/* Brand */}
           <div className="space-y-4">
             <div className="flex items-center gap-2">
-              <div className="w-10 h-10 bg-primary rounded-lg flex items-center justify-center">
-                <span className="font-bold text-lg">{siteName[0]}</span>
-              </div>
+              <img
+                src="/logo.png" // <-- Put your logo path here (in /public folder)
+                alt={`${siteName} logo`}
+                className="w-10 h-10 object-cover rounded-lg"
+              />
               <span className="font-serif text-lg font-semibold">{siteName}</span>
             </div>
             <p className="text-sm text-background/80">Revêtements de sol et mur haut de gamme en Tunisie.</p>
