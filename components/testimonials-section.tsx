@@ -1,6 +1,8 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { useEffect, useState, useRef } from "react"
+import { Card, CardContent, CardHeader } from "@/components/ui/card"
+import { Star } from "lucide-react"
 import { createClient } from "@/lib/supabase/client"
 
 interface Testimonial {
@@ -15,10 +17,24 @@ interface Testimonial {
 export function TestimonialsSection() {
   const [testimonials, setTestimonials] = useState<Testimonial[]>([])
   const [loading, setLoading] = useState(true)
+  const [isVisible, setIsVisible] = useState(false)
+  const sectionRef = useRef<HTMLElement>(null)
   const supabase = createClient()
 
   useEffect(() => {
     fetchTestimonials()
+  }, [])
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) setIsVisible(true)
+      },
+      { threshold: 0.1 }
+    )
+
+    if (sectionRef.current) observer.observe(sectionRef.current)
+    return () => observer.disconnect()
   }, [])
 
   const fetchTestimonials = async () => {
@@ -33,7 +49,7 @@ export function TestimonialsSection() {
       if (error) throw error
       setTestimonials(data || [])
     } catch (error) {
-      console.error("Error fetching testimonials:", error)
+      console.error(error)
       setTestimonials([])
     } finally {
       setLoading(false)
@@ -42,70 +58,87 @@ export function TestimonialsSection() {
 
   if (loading) {
     return (
-      <section className="py-20 bg-gray-50">
-        <div className="max-w-7xl mx-auto px-4 text-center">
-          <p className="text-gray-500">Chargement des témoignages...</p>
+      <section className="py-20 bg-background">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <p className="text-muted-foreground">Chargement des témoignages...</p>
         </div>
       </section>
     )
   }
 
-  if (testimonials.length === 0) {
+  if (!testimonials.length) {
     return (
-      <section className="py-20 bg-gray-50">
-        <div className="max-w-7xl mx-auto px-4 text-center">
-          <h2 className="text-3xl font-bold mb-4">Témoignages de nos clients</h2>
-          <p className="text-gray-500">
-            Les premiers témoignages arrivent bientôt! Soyez les premiers à partager votre expérience.
-          </p>
-          <button
-            onClick={() => {
-              setLoading(true)
-              fetchTestimonials()
-            }}
-            className="mt-4 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition"
-          >
-            Rafraîchir
-          </button>
+      <section className="py-20 bg-background">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <p className="text-muted-foreground">Aucun témoignage pour le moment.</p>
         </div>
       </section>
     )
   }
 
   return (
-    <section className="py-20 bg-gray-50">
-      <div className="max-w-7xl mx-auto px-4">
-        <div className="text-center mb-12">
-          <h2 className="text-3xl font-bold mb-2">Témoignages de nos clients</h2>
-          <p className="text-gray-500">Découvrez ce que nos clients satisfaits pensent de nos services et produits premium.</p>
+    <section
+      ref={sectionRef}
+      className={`py-20 bg-background transition-all duration-1000 ${
+        isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"
+      }`}
+    >
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="max-w-2xl mx-auto mb-12 text-center">
+          <h2 className="text-3xl md:text-4xl font-serif font-bold text-foreground mb-4">
+            Témoignages de nos clients
+          </h2>
+          <p className="text-lg text-muted-foreground">
+            Découvrez ce que nos clients satisfaits pensent de nos services et produits premium.
+          </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {testimonials.map((t) => (
-            <div
-              key={t.id}
-              className="bg-white p-6 rounded-lg shadow hover:shadow-lg transition"
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+          {testimonials.map((testimonial, index) => (
+            <Card
+              key={testimonial.id}
+              className={`p-4 shadow-lg border rounded-lg transition-transform duration-500 hover:scale-105 ${
+                isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"
+              }`}
+              style={{ transitionDelay: `${index * 150}ms` }}
             >
-              <div className="flex items-center gap-3 mb-4">
-                {t.image_url ? (
-                  <img src={t.image_url} alt={t.name} className="w-12 h-12 rounded-full object-cover" />
+              <CardHeader className="flex flex-col sm:flex-row items-center sm:items-start gap-3 mb-4">
+                {testimonial.image_url ? (
+                  <img
+                    src={testimonial.image_url}
+                    alt={testimonial.name}
+                    className="w-16 h-16 rounded-full object-cover"
+                  />
                 ) : (
-                  <div className="w-12 h-12 rounded-full bg-gray-300"></div>
+                  <div className="w-16 h-16 rounded-full bg-muted-foreground" />
                 )}
-                <h3 className="font-semibold">{t.name}</h3>
-              </div>
+                <div className="text-center sm:text-left">
+                  <h3 className="font-semibold text-foreground">{testimonial.name}</h3>
+                  <p className="text-xs text-muted-foreground">
+                    {new Date(testimonial.created_at).toLocaleDateString("fr-TN", {
+                      year: "numeric",
+                      month: "long",
+                    })}
+                  </p>
+                </div>
+              </CardHeader>
 
-              <div className="flex mb-2">
-                {Array.from({ length: t.rating }).map((_, i) => (
-                  <div key={i} className="w-4 h-4 bg-yellow-400 mr-1 rounded-full"></div>
-                ))}
-              </div>
-
-              <p className="text-gray-600 italic">"{t.message}"</p>
-              <p className="text-xs text-gray-400 mt-2">
-                {new Date(t.created_at).toLocaleDateString("fr-TN", { year: "numeric", month: "long" })}
-              </p>
-            </div>
+              <CardContent>
+                <div className="flex justify-center sm:justify-start gap-1 mb-2">
+                  {[1, 2, 3, 4, 5].map((star) => (
+                    <Star
+                      key={star}
+                      className={`w-4 h-4 ${
+                        star <= testimonial.rating ? "fill-accent text-accent" : "text-muted-foreground"
+                      }`}
+                    />
+                  ))}
+                </div>
+                <p className="text-muted-foreground italic text-center sm:text-left">
+                  "{testimonial.message}"
+                </p>
+              </CardContent>
+            </Card>
           ))}
         </div>
       </div>
