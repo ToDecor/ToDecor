@@ -122,13 +122,7 @@ export function TestimonialsSection() {
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {testimonials.map((testimonial, index) => (
-            <Card
-              key={testimonial.id}
-              className={`transition-all duration-700 ${
-                isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"
-              }`}
-              style={{ transitionDelay: `${index * 150}ms` }}
-            >
+            
               <CardHeader>
                 <div className="flex items-center gap-3 mb-2">
                   {testimonial.image_url && (
