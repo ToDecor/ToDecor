@@ -1,6 +1,7 @@
 "use client"
 
 import Link from "next/link"
+import Image from "next/image"
 import { Facebook, Instagram, Linkedin, Phone, Mail, MapPin } from "lucide-react"
 import { useSettings } from "@/lib/hooks/use-settings"
 
@@ -22,10 +23,12 @@ export function Footer() {
           {/* Brand */}
           <div className="space-y-4">
             <div className="flex items-center gap-2">
-              <img
-                src="/logo.png" // <-- Put your logo path here (in /public folder)
-                alt={`${siteName} logo`}
-                className="w-10 h-10 object-cover rounded-lg"
+              <Image
+                src="/logo.png" // <-- Place your ToDecor logo here in /public/logo.png
+                alt="ToDecor logo"
+                width={40}
+                height={40}
+                className="rounded-lg"
               />
               <span className="font-serif text-lg font-semibold">{siteName}</span>
             </div>
