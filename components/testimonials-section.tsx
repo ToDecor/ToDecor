@@ -123,33 +123,6 @@ export function TestimonialsSection() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {testimonials.map((testimonial, index) => (
             
-              <CardHeader>
-                <div className="flex items-center gap-3 mb-2">
-                  {testimonial.image_url && (
-                    <img
-                      src={testimonial.image_url || "/placeholder.svg"}
-                      alt={testimonial.name}
-                      className="w-12 h-12 rounded-full object-cover"
-                    />
-                  )}
-                  <h3 className="font-serif font-semibold text-foreground">{testimonial.name}</h3>
-                </div>
-                <p className="text-xs text-muted-foreground">
-                  {new Date(testimonial.created_at).toLocaleDateString("fr-TN", {
-                    year: "numeric",
-                    month: "long",
-                  })}
-                </p>
-              </CardHeader>
-              <CardContent className="space-y-3">
-                <div className="flex gap-1">
-                  {[...Array(testimonial.rating)].map((_, i) => (
-                    <Star key={i} className="w-4 h-4 fill-accent text-accent" />
-                  ))}
-                </div>
-                <p className="text-muted-foreground italic">"{testimonial.message}"</p>
-              </CardContent>
-            </Card>
           ))}
         </div>
       </div>
