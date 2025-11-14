@@ -130,23 +130,18 @@ export function TestimonialsSection() {
               style={{ transitionDelay: `${index * 150}ms` }}
             >
               <CardHeader>
-  <div className="flex items-center gap-3 mb-2">
-    {testimonial.image_url && (
-      // Commenting out the <img> tag
-      /*
-      <img
-        src={testimonial.image_url || "/placeholder.svg"}
-        alt={testimonial.name}
-        className="w-12 h-12 rounded-full object-cover"
-      />
-      */
-      
-      // OPTIONAL: Add a temporary marker to show where the image was
-      <span className="text-sm text-red-500">[Image Disabled]</span>
-    )}
-    
-    <h3 className="font-serif font-semibold text-foreground">{testimonial.name}</h3>
-  </div>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+  {testimonials.map((testimonial) => (
+    <div 
+      key={testimonial.id} 
+      className="p-4 border-2 border-red-500" // Red border for visibility
+    >
+      {/* 🔴 Only render the name and message 🔴 */}
+      <h3 className="font-bold">Name: {testimonial.name}</h3>
+      <p>Message: {testimonial.message}</p>
+    </div>
+  ))}
+</div>
                 <p className="text-xs text-muted-foreground">
                   {new Date(testimonial.created_at).toLocaleDateString("fr-TN", {
                     year: "numeric",
