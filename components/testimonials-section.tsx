@@ -106,68 +106,28 @@ export function TestimonialsSection() {
   }
 
   return (
-    <section
-      ref={sectionRef}
-      className={`py-20 md:py-28 bg-background transition-all duration-1000 ${
-        isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"
-      }`}
-    >
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="max-w-2xl mb-16">
-          <h2 className="text-3xl md:text-4xl font-serif font-bold text-foreground mb-4">Témoignages de nos clients</h2>
-          <p className="text-lg text-muted-foreground">
-            Découvrez ce que nos clients satisfaits pensent de nos services et produits premium.
-          </p>
-        </div>
+  <section className="py-10 bg-gray-100">
+    <div className="max-w-7xl mx-auto px-4">
+      <h2 className="text-2xl font-bold mb-4">CRASH TEST SECTION (If you see this, the component is rendering)</h2>
+      
+      {/* Test 1: Check if the array length variable renders */}
+      <p className="mb-4">Testimonials Count: {testimonials.length}</p>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {testimonials.map((testimonial, index) => (
-            <Card
-              key={testimonial.id}
-              className={`transition-all duration-700 ${
-                isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"
-              }`}
-              style={{ transitionDelay: `${index * 150}ms` }}
-            >
-              <CardHeader>
-                <div className="flex items-center gap-3 mb-2">
-                  {testimonial.image_url && (
-                    /* FIX: Using the correct JSX comment {/ * ... * /} to disable image.
-                       The image tag is disabled here because large Base64 strings can cause crashes.
-                       Re-enable this after testing the rest of the component.
-                    */
-                    <img
-                      src={testimonial.image_url || "/placeholder.svg"}
-                      alt={testimonial.name}
-                      className="w-12 h-12 rounded-full object-cover"
-                    />
-                  )}
-                  <h3 className="font-serif font-semibold text-foreground">{testimonial.name}</h3>
-                </div>
-                <p className="text-xs text-muted-foreground">
-                  {/* FIX: Check for created_at before running new Date() */}
-                  {testimonial.created_at ? 
-                    new Date(testimonial.created_at).toLocaleDateString("fr-TN", {
-                      year: "numeric",
-                      month: "long",
-                    })
-                    : "Date inconnue"
-                  }
-                </p>
-              </CardHeader>
-              <CardContent className="space-y-3">
-                <div className="flex gap-1">
-                  {/* FIX: Use testimonial.rating || 0 to prevent Array constructor crash if rating is null/undefined */}
-                  {[...Array(testimonial.rating || 0)].map((_, i) => (
-                    <Star key={i} className="w-4 h-4 fill-accent text-accent" />
-                  ))}
-                </div>
-                <p className="text-muted-foreground italic">"{testimonial.message}"</p>
-              </CardContent>
-            </Card>
-          ))}
+      {/* Test 2: Iterate over the array with NO external components or complex logic */}
+      {testimonials.map((testimonial) => (
+        <div key={testimonial.id} className="p-4 border-2 border-red-500 mb-2">
+          <p className="font-semibold">Name: {testimonial.name}</p>
+          <p>Message: {testimonial.message}</p>
+          {/* CRITICAL: Check for any null/undefined access */}
+          <p>Rating: {testimonial.rating}</p> 
+          <p>Created At: {testimonial.created_at}</p>
         </div>
-      </div>
-    </section>
-  )
-}
+      ))}
+      
+      {/* If the array is empty, this serves as a final fallback check */}
+      {testimonials.length === 0 && (
+          <p>Array is empty after load.</p>
+      )}
+    </div>
+  </section>
+)
