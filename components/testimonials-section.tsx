@@ -1,7 +1,7 @@
 "use client"
 
 import { useEffect, useState } from "react"
-import { Card, CardContent, CardHeader } from "@/components/ui/card"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Star } from "lucide-react"
 import { createClient } from "@/lib/supabase/client"
 
@@ -44,9 +44,9 @@ export function TestimonialsSection() {
 
   if (loading) {
     return (
-      <section className="py-20 bg-gray-50">
+      <section className="py-20 bg-muted/30">
         <div className="max-w-7xl mx-auto px-4 text-center">
-          <p className="text-gray-500">Chargement des témoignages...</p>
+          <p className="text-muted-foreground">Chargement des témoignages...</p>
         </div>
       </section>
     )
@@ -54,10 +54,10 @@ export function TestimonialsSection() {
 
   if (testimonials.length === 0) {
     return (
-      <section className="py-20 bg-gray-50">
+      <section className="py-20 bg-muted/30">
         <div className="max-w-7xl mx-auto px-4 text-center">
-          <h2 className="text-3xl font-bold mb-4">Témoignages de nos clients</h2>
-          <p className="text-gray-500">
+          <h2 className="text-3xl font-serif font-bold mb-4 text-foreground">Témoignages de nos clients</h2>
+          <p className="text-muted-foreground">
             Les premiers témoignages arrivent bientôt! Soyez les premiers à partager votre expérience.
           </p>
           <button
@@ -65,7 +65,7 @@ export function TestimonialsSection() {
               setLoading(true)
               fetchTestimonials()
             }}
-            className="py-20 md:py-28 bg-muted/30">
+            className="mt-4 px-4 py-2 bg-accent text-background rounded hover:opacity-90 transition"
           >
             Rafraîchir
           </button>
@@ -75,33 +75,40 @@ export function TestimonialsSection() {
   }
 
   return (
-    <section className="py-20 bg-gray-50">
+    <section className="py-20 bg-muted/30">
       <div className="max-w-7xl mx-auto px-4">
         <div className="text-center mb-12">
-          <h2 className="text-3xl font-bold mb-2">Témoignages de nos clients</h2>
-          <p className="text-gray-500">Découvrez ce que nos clients satisfaits pensent de nos services et produits premium.</p>
+          <h2 className="text-3xl md:text-4xl font-serif font-bold mb-2 text-foreground">
+            Témoignages de nos clients
+          </h2>
+          <p className="text-muted-foreground">
+            Découvrez ce que nos clients satisfaits pensent de nos services et produits premium.
+          </p>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {testimonials.map((t) => (
-            <Card key={t.id}>
+            <Card key={t.id} className="bg-background border border-border">
               <CardHeader className="flex items-center gap-3 mb-2">
                 {t.image_url ? (
                   <img src={t.image_url} alt={t.name} className="w-12 h-12 rounded-full object-cover" />
                 ) : (
-                  <div className="w-12 h-12 rounded-full bg-gray-300"></div>
+                  <div className="w-12 h-12 rounded-full bg-muted/50"></div>
                 )}
-                <h3 className="font-semibold">{t.name}</h3>
+                <CardTitle className="font-serif text-foreground">{t.name}</CardTitle>
               </CardHeader>
               <CardContent>
                 <div className="flex gap-1 mb-2">
                   {Array.from({ length: t.rating }).map((_, i) => (
-                    <Star key={i} className="w-4 h-4 fill-yellow-400 text-yellow-400" />
+                    <Star key={i} className="w-4 h-4 fill-accent text-accent" />
                   ))}
                 </div>
-                <p className="text-gray-600 italic">"{t.message}"</p>
-                <p className="text-xs text-gray-400 mt-2">
-                  {new Date(t.created_at).toLocaleDateString("fr-TN", { year: "numeric", month: "long" })}
+                <p className="text-muted-foreground italic">"{t.message}"</p>
+                <p className="text-xs text-muted-foreground mt-2">
+                  {new Date(t.created_at).toLocaleDateString("fr-TN", {
+                    year: "numeric",
+                    month: "long",
+                  })}
                 </p>
               </CardContent>
             </Card>
