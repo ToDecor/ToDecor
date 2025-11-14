@@ -88,12 +88,12 @@ export function TestimonialsSection() {
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {testimonials.map((t) => (
-            <Card key={t.id} className="bg-background border border-border">
+            <Card key={t.id} className="bg-white border border-border shadow-sm hover:shadow-md transition">
               <CardHeader className="flex items-center gap-3 mb-2">
                 {t.image_url ? (
                   <img src={t.image_url} alt={t.name} className="w-12 h-12 rounded-full object-cover" />
                 ) : (
-                  <div className="w-12 h-12 rounded-full bg-muted/50"></div>
+                  <div className="w-12 h-12 rounded-full bg-gray-300"></div>
                 )}
                 <CardTitle className="font-serif text-foreground">{t.name}</CardTitle>
               </CardHeader>
