@@ -25,11 +25,32 @@ export function TestimonialsSection() {
     fetchTestimonials()
   }, [])
 
+  // FIX: Intersection Observer Logic Modified for Immediate Visibility
   useEffect(() => {
+    // 1. Check for immediate visibility on mount
+    const checkImmediateVisibility = () => {
+      if (sectionRef.current) {
+        const rect = sectionRef.current.getBoundingClientRect()
+        // Check if the element's top is visible AND the bottom is not above the top of the viewport
+        if (rect.top < window.innerHeight && rect.bottom >= 0) {
+          setIsVisible(true)
+          return true // Element is already visible
+        }
+      }
+      return false
+    }
+
+    if (checkImmediateVisibility()) {
+        return // If already visible, skip setting up the observer
+    }
+
+    // 2. Set up the observer for when the user scrolls down
     const observer = new IntersectionObserver(
       ([entry]) => {
         if (entry.isIntersecting) {
           setIsVisible(true)
+          // Once intersected, no need to observe anymore
+          observer.disconnect() 
         }
       },
       { threshold: 0.1 },
@@ -132,8 +153,6 @@ export function TestimonialsSection() {
               <CardHeader>
                 <div className="flex items-center gap-3 mb-2">
                   {testimonial.image_url && (
-                    // FIX: Image rendering enabled. If it still crashes, 
-                    // this Base64 image is the sole problem.
                     <img
                       src={testimonial.image_url || "/placeholder.svg"}
                       alt={testimonial.name}
@@ -143,7 +162,6 @@ export function TestimonialsSection() {
                   <h3 className="font-serif font-semibold text-foreground">{testimonial.name}</h3>
                 </div>
                 <p className="text-xs text-muted-foreground">
-                  {/* FIX: Check for created_at to prevent new Date() parsing crash */}
                   {testimonial.created_at ? 
                     new Date(testimonial.created_at).toLocaleDateString("fr-TN", {
                       year: "numeric",
@@ -155,7 +173,6 @@ export function TestimonialsSection() {
               </CardHeader>
               <CardContent className="space-y-3">
                 <div className="flex gap-1">
-                  {/* FIX: Use testimonial.rating || 0 to prevent Array constructor crash */}
                   {[...Array(testimonial.rating || 0)].map((_, i) => (
                     <Star key={i} className="w-4 h-4 fill-accent text-accent" />
                   ))}
