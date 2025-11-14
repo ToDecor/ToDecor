@@ -1,9 +1,12 @@
 "use client"
 
 import { useEffect, useState } from "react"
+import Slider from "react-slick"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Star } from "lucide-react"
 import { createClient } from "@/lib/supabase/client"
+import "slick-carousel/slick/slick.css"
+import "slick-carousel/slick/slick-theme.css"
 
 interface Testimonial {
   id: string
@@ -31,7 +34,6 @@ export function TestimonialsSection() {
         .eq("is_verified", true)
         .order("created_at", { ascending: false })
         .limit(6)
-
       if (error) throw error
       setTestimonials(data || [])
     } catch (error) {
@@ -74,6 +76,34 @@ export function TestimonialsSection() {
     )
   }
 
+  const sliderSettings = {
+    dots: true,
+    infinite: true,
+    speed: 500,
+    slidesToShow: 1, // mobile default
+    slidesToScroll: 1,
+    responsive: [
+      {
+        breakpoint: 768, // mobile
+        settings: {
+          slidesToShow: 1,
+        },
+      },
+      {
+        breakpoint: 1024, // tablets
+        settings: {
+          slidesToShow: 2,
+        },
+      },
+      {
+        breakpoint: 1280, // desktop
+        settings: {
+          slidesToShow: 3,
+        },
+      },
+    ],
+  }
+
   return (
     <section className="py-20 bg-muted/30">
       <div className="max-w-7xl mx-auto px-4">
@@ -86,34 +116,33 @@ export function TestimonialsSection() {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <Slider {...sliderSettings} className="space-x-4">
           {testimonials.map((t) => (
-            <Card key={t.id} className="bg-white border border-border shadow-sm hover:shadow-md transition">
-              <CardHeader className="flex items-center gap-3 mb-2">
-                {t.image_url ? (
-                  <img src={t.image_url} alt={t.name} className="w-12 h-12 rounded-full object-cover" />
-                ) : (
-                  <div className="w-12 h-12 rounded-full bg-gray-300"></div>
-                )}
-                <CardTitle className="font-serif text-foreground">{t.name}</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="flex gap-1 mb-2">
-                  {Array.from({ length: t.rating }).map((_, i) => (
-                    <Star key={i} className="w-4 h-4 fill-accent text-accent" />
-                  ))}
-                </div>
-                <p className="text-muted-foreground italic">"{t.message}"</p>
-                <p className="text-xs text-muted-foreground mt-2">
-                  {new Date(t.created_at).toLocaleDateString("fr-TN", {
-                    year: "numeric",
-                    month: "long",
-                  })}
-                </p>
-              </CardContent>
-            </Card>
+            <div key={t.id} className="px-2">
+              <Card className="bg-white border border-border shadow-sm hover:shadow-md transition">
+                <CardHeader className="flex items-center gap-3 mb-2">
+                  {t.image_url ? (
+                    <img src={t.image_url} alt={t.name} className="w-12 h-12 rounded-full object-cover" />
+                  ) : (
+                    <div className="w-12 h-12 rounded-full bg-gray-300"></div>
+                  )}
+                  <CardTitle className="font-serif text-foreground">{t.name}</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="flex gap-1 mb-2">
+                    {Array.from({ length: t.rating }).map((_, i) => (
+                      <Star key={i} className="w-4 h-4 fill-accent text-accent" />
+                    ))}
+                  </div>
+                  <p className="text-muted-foreground italic">"{t.message}"</p>
+                  <p className="text-xs text-muted-foreground mt-2">
+                    {new Date(t.created_at).toLocaleDateString("fr-TN", { year: "numeric", month: "long" })}
+                  </p>
+                </CardContent>
+              </Card>
+            </div>
           ))}
-        </div>
+        </Slider>
       </div>
     </section>
   )
