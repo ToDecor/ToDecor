@@ -1,12 +1,9 @@
 "use client"
 
 import { useEffect, useState } from "react"
-import Slider from "react-slick"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Star } from "lucide-react"
 import { createClient } from "@/lib/supabase/client"
-import "slick-carousel/slick/slick.css"
-import "slick-carousel/slick/slick-theme.css"
 
 interface Testimonial {
   id: string
@@ -76,34 +73,6 @@ export function TestimonialsSection() {
     )
   }
 
-  const sliderSettings = {
-    dots: true,
-    infinite: true,
-    speed: 500,
-    slidesToShow: 1, // mobile default
-    slidesToScroll: 1,
-    responsive: [
-      {
-        breakpoint: 768, // mobile
-        settings: {
-          slidesToShow: 1,
-        },
-      },
-      {
-        breakpoint: 1024, // tablets
-        settings: {
-          slidesToShow: 2,
-        },
-      },
-      {
-        breakpoint: 1280, // desktop
-        settings: {
-          slidesToShow: 3,
-        },
-      },
-    ],
-  }
-
   return (
     <section className="py-20 bg-muted/30">
       <div className="max-w-7xl mx-auto px-4">
@@ -116,10 +85,11 @@ export function TestimonialsSection() {
           </p>
         </div>
 
-        <Slider {...sliderSettings} className="space-x-4">
+        {/* Carousel */}
+        <div className="flex overflow-x-auto space-x-4 snap-x snap-mandatory scrollbar-hide">
           {testimonials.map((t) => (
-            <div key={t.id} className="px-2">
-              <Card className="bg-white border border-border shadow-sm hover:shadow-md transition">
+            <div key={t.id} className="flex-shrink-0 w-full sm:w-80 md:w-96 snap-start">
+              <Card className="bg-white border border-border shadow-sm hover:shadow-md transition transform hover:-translate-y-1">
                 <CardHeader className="flex items-center gap-3 mb-2">
                   {t.image_url ? (
                     <img src={t.image_url} alt={t.name} className="w-12 h-12 rounded-full object-cover" />
@@ -142,7 +112,7 @@ export function TestimonialsSection() {
               </Card>
             </div>
           ))}
-        </Slider>
+        </div>
       </div>
     </section>
   )
