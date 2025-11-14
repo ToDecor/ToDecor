@@ -130,28 +130,38 @@ export function TestimonialsSection() {
               style={{ transitionDelay: `${index * 150}ms` }}
             >
               <CardHeader>
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-  {testimonials.map((testimonial) => (
-    <div 
-      key={testimonial.id} 
-      className="p-4 border-2 border-red-500" // Red border for visibility
-    >
-      {/* 🔴 Only render the name and message 🔴 */}
-      <h3 className="font-bold">Name: {testimonial.name}</h3>
-      <p>Message: {testimonial.message}</p>
-    </div>
-  ))}
-</div>
+                <div className="flex items-center gap-3 mb-2">
+                  {testimonial.image_url && (
+                    <img
+                      // The image is commented out for now. If it still crashes, the base64 string is too large.
+                      // If you want to enable it later, uncomment the img tag and ensure it's not the crash source.
+                      /*
+                      <img
+                        src={testimonial.image_url || "/placeholder.svg"}
+                        alt={testimonial.name}
+                        className="w-12 h-12 rounded-full object-cover"
+                      />
+                      */
+                      <span className="text-sm text-red-500">[Image Placeholder]</span>
+                  )}
+                  <h3 className="font-serif font-semibold text-foreground">{testimonial.name}</h3>
+                </div>
                 <p className="text-xs text-muted-foreground">
-                  {new Date(testimonial.created_at).toLocaleDateString("fr-TN", {
-                    year: "numeric",
-                    month: "long",
-                  })}
+                  {/* FIX 1: Add a check for created_at to prevent new Date() crash */}
+                  {testimonial.created_at ? (
+                    new Date(testimonial.created_at).toLocaleDateString("fr-TN", {
+                      year: "numeric",
+                      month: "long",
+                    })
+                  ) : (
+                    "Date inconnue"
+                  )}
                 </p>
               </CardHeader>
               <CardContent className="space-y-3">
                 <div className="flex gap-1">
-                  {[...Array(testimonial.rating)].map((_, i) => (
+                  {/* FIX 2: Use testimonial.rating || 0 to prevent Array constructor crash if rating is null/undefined */}
+                  {[...Array(testimonial.rating || 0)].map((_, i) => (
                     <Star key={i} className="w-4 h-4 fill-accent text-accent" />
                   ))}
                 </div>
